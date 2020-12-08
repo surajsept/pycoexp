@@ -17,7 +17,8 @@ Alternatively, you can use [Anaconda](https://www.anaconda.com/download/) to ins
 
 ****
 Once you have checked the steps above. You may consider refering to the [Beginners Guide](https://wiki.python.org/moin/BeginnersGuide). 
-Or, just start a python console to integrate expression values into a copasi model.
+Or, just start a python console to: 
+### Integrate expression values into a copasi model.
 
 ```python
 import pycoexp.tasks
@@ -42,7 +43,7 @@ Concentration, Flux = task.steadystate(filepath_CPSmodel='model.cps')
 ControlCoefficients, Elasticities = task.mca(filepath_CPSmodel='model.cps', system_variable='concentration')
 ```
 
-### Example 4: To do a parameter scan
+### Example 3: To do a parameter scan
 ```python
 # do parameter scan
 Conc, Fluxes = task.scan(filepath_CPSmodel='model.cps', parameter_name='NAMPT', E_T_or_k1='E_T', lb=0.1, ub=1.0, n=10, rescaling=True)
