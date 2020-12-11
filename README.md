@@ -1,4 +1,4 @@
-# pycoexp
+# PyCoExp
 A python package that allows users to integrate expression data into Copasi (.cps) models. Additionally, it allows users to use copasi model and perform the following tasks: steadystate calculation, metabolic control analysis, and parameter scan.
 
 The *pycoexp* framework is developed using Python 3.
