@@ -29,7 +29,7 @@ def get_state(model):
     """
     Metabolite_Concentrations = {}
     for metab in model.getMetabolites():
-        Metabolite_Concentrations['{}'.format(metab.getObjectName())] = metab.getConcentration()
+        Metabolite_Concentrations['{}'.format(metab.getObjectDisplayName())] = metab.getConcentration()
 
     Reaction_Fluxes = {}
     for reaction in model.getReactions():
