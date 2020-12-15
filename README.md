@@ -9,11 +9,10 @@ You can download the latest version of Python [here](https://www.python.org/down
 Alternatively, you can use [Anaconda](https://www.anaconda.com/download/) to install python for your computer (Linux, Windows, Mac).
   
 #### 2. Installing packages using requirement file
-      pip install -r requirements.txt
+       $ pip install -r requirements.txt
 
 #### 3. Cloning and installing pycoexp pacakge
-      git clone git@github.com:MolecularBioinformatics/pycoexp.git
-      pip install -e pycoexp/ 
+      $ pip install git+https://github.com/MolecularBioinformatics/pycoexp
 
 ****
 Once you have checked the steps above. You may consider refering to the [Beginners Guide](https://wiki.python.org/moin/BeginnersGuide). 
