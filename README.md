@@ -9,10 +9,10 @@ You can download the latest version of Python [here](https://www.python.org/down
 Alternatively, you can use [Anaconda](https://www.anaconda.com/download/) to install python for your computer (Linux, Windows, Mac).
   
 #### 2. Installing packages using requirement file
-       $ pip install -r requirements.txt
+     $ pip install -r requirements.txt
 
 #### 3. Cloning and installing pycoexp pacakge
-      $ pip install git+https://github.com/MolecularBioinformatics/pycoexp
+     $ pip install git+https://github.com/MolecularBioinformatics/pycoexp
 
 ****
 Once you have checked the steps above. You may consider refering to the [Beginners Guide](https://wiki.python.org/moin/BeginnersGuide). 
@@ -20,8 +20,7 @@ Or, just start a python console to:
 ### Integrate expression values into a copasi model.
 
 ```python
-import pycoexp.tasks
-task = pycoexp.tasks.tasks()
+import pycoexp.tasks as task
 # integrate expression values and save updated copasi models in folder 'updatedModels'
 task.integrate_expression(filepath_CPSmodel='model.cps', filepath_expdata='ExpData.csv', filepath_mapping='mapping.csv',
                            foldername='updatedModels/', parametertochange='E_T')
@@ -46,6 +45,12 @@ ControlCoefficients, Elasticities = task.mca(filepath_CPSmodel='model.cps', syst
 ```python
 # do parameter scan
 Conc, Fluxes = task.scan(filepath_CPSmodel='model.cps', parameter_name='NAMPT', E_T_or_k1='E_T', lb=0.1, ub=1.0, n=10, rescaling=True)
+```
+
+### Example 4: To do a time-course simulation
+```python
+# do time-course simulation
+Conc, Fluxes = task.time_course(filepath_CPSmodel='model.cps', duration=100, stepsize=0.1)
 ```
 
 ****
