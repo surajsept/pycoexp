@@ -36,6 +36,28 @@ def get_state(model):
         Reaction_Fluxes['{}'.format(reaction.getObjectName())] = reaction.getFlux()
     return Metabolite_Concentrations, Reaction_Fluxes
 
+def updateModel1(dataModel, parameter_name: str or list, value: float, E_T_or_k1:str, modelname:str):
+    model = dataModel.getModel()
+    if type(parameter_name)==list:
+        for i in range(len(parameter_name)):
+            updateParam(model=model, parameter_name=parameter_name[i], value=value[i], E_T_or_k1=E_T_or_k1)
+    elif type(parameter_name)==str:
+        updateParam(model=model, parameter_name=parameter_name, value=value, E_T_or_k1=E_T_or_k1)
+    return dataModel.saveModel(modelname, True)
+
+def updateParam(model, parameter_name: str, value: float, E_T_or_k1:str):
+    try:
+        mv = model.getModelValue(parameter_name)
+        assert mv != None, "Parameter {} not found".format(parameter_name)
+        mv.setInitialValue(value)
+    except AssertionError:
+        rxn = model.getReaction(parameter_name)
+        assert rxn != None, "Reaction {} not found".format(parameter_name)
+        para_value = rxn.getParameterValue(E_T_or_k1)
+        assert para_value != None, "No such parameter"
+        rxn.setParameterValue(E_T_or_k1, value)
+        assert rxn.getParameterValue(E_T_or_k1) == value
+
 def updateModel(dataModel, parameter_name: str, value: float, E_T_or_k1:str, modelname:str):
     model = dataModel.getModel()
     try:

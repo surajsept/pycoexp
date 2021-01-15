@@ -4,9 +4,59 @@ import shutil
 import pandas as pd
 import numpy as np
 import logging
+import sys
 
 import pycoexp.MetabolicControlAnalysis as MCA
 import pycoexp.utility as u
+
+def optimization(filepath_CPSmodel, **kwargs):
+    # create dataModel object
+    dataModel = init_dataModel(filepath_CPSmodel=filepath_CPSmodel)
+
+    # create optimization task
+    optTask = dataModel.getTask("Optimization")
+
+    if 'method' in kwargs:
+        optTask.setMethodType(kwargs['method'])
+        optMethod = optTask.getMethod()
+        assert optMethod != None
+
+    if 'parameter' in kwargs:
+        if type(kwargs['parameter']) is list:
+            assert len(kwargs['parameter']) == len(kwargs['parameter_value'])
+            for i in range(len(kwargs['parameter'])):
+                parameter = optMethod.getParameter(kwargs['parameter'][i])
+                assert parameter != None
+                parameter.setIntValue(kwargs['parameter_value'][i])
+        else:
+            parameter = optMethod.getParameter(kwargs['parameter'])
+            assert parameter != None
+            parameter.setIntValue(kwargs['parameter_value'])
+
+
+    # # we want to use Levenberg-Marquardt as the optimization method
+    # optTask.setMethodType(COPASI.CTaskEnum.Method_LevenbergMarquardt)
+    # optMethod = optTask.getMethod()
+    # assert optMethod != None
+    # # now we set some method parameters for the optimization method
+    # # iteration limit
+    # parameter = optMethod.getParameter("Iteration Limit")
+    # assert parameter != None
+    # parameter.setIntValue(2000)
+    # # tolerance
+    # parameter = optMethod.getParameter("Tolerance")
+    # assert parameter != None
+    # parameter.setDblValue(1.0e-5)
+
+    optProblem = optTask.getProblem()
+
+    # set process to True
+    optTask.process(True)
+
+    result = [optProblem.getSolutionVariables().get(j) for j in range(optProblem.getSolutionVariables().size())]
+    objectiveValue = optProblem.getSolutionValue()
+    return objectiveValue, result
+
 
 def init_dataModel(filepath_CPSmodel: str):
     dataModel = COPASI.CRootContainer.addDatamodel()
@@ -17,17 +67,19 @@ def init_dataModel(filepath_CPSmodel: str):
 
 def mca(filepath_CPSmodel: str, system_variable: str):
     method = MCA.run_mca(file_name=filepath_CPSmodel)
+
+    assert system_variable in ['concentration', 'flux', 'elasticity'], \
+        'Possible inputs for system_variable: concentration, flux, elasticity'
+
     if system_variable == 'concentration':
         control_coeff = MCA.print_annotated_matrix("Scaled Concentration Control Coefficients", method.getScaledConcentrationCCAnn())
-        elasticity = MCA.print_annotated_matrix("Scaled Elasticities", method.getScaledElasticitiesAnn())
-        return control_coeff, elasticity
+        return control_coeff
     elif system_variable == 'flux':
         control_coeff = MCA.print_annotated_matrix("Scaled Flux Control Coefficients", method.getScaledFluxCCAnn())
+        return control_coeff
+    elif system_variable == 'elasticity':
         elasticity = MCA.print_annotated_matrix("Scaled Elasticities", method.getScaledElasticitiesAnn())
-        return control_coeff, elasticity
-    else:
-        return print("Use 'concentration' or 'flux' as system_variable")
-
+        return elasticity
 
 
 def scan(filepath_CPSmodel: str, parameter_name: str, E_T_or_k1: str, lb:float, ub:float, n:int,
