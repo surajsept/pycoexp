@@ -4,7 +4,6 @@ import shutil
 import pandas as pd
 import numpy as np
 import logging
-import sys
 
 import pycoexp.MetabolicControlAnalysis as MCA
 import pycoexp.utility as u
@@ -19,20 +18,19 @@ def optimization(filepath_CPSmodel, **kwargs):
     if 'method' in kwargs:
         optTask.setMethodType(kwargs['method'])
         optMethod = optTask.getMethod()
-        assert optMethod != None
+        assert optMethod is not None
 
     if 'parameter' in kwargs:
         if type(kwargs['parameter']) is list:
             assert len(kwargs['parameter']) == len(kwargs['parameter_value'])
             for i in range(len(kwargs['parameter'])):
                 parameter = optMethod.getParameter(kwargs['parameter'][i])
-                assert parameter != None
+                assert parameter is not None
                 parameter.setIntValue(kwargs['parameter_value'][i])
         else:
             parameter = optMethod.getParameter(kwargs['parameter'])
-            assert parameter != None
+            assert parameter is not None
             parameter.setIntValue(kwargs['parameter_value'])
-
 
     # # we want to use Levenberg-Marquardt as the optimization method
     # optTask.setMethodType(COPASI.CTaskEnum.Method_LevenbergMarquardt)
@@ -65,6 +63,7 @@ def init_dataModel(filepath_CPSmodel: str):
     dataModel.loadModel(filepath_CPSmodel)
     return dataModel
 
+
 def mca(filepath_CPSmodel: str, system_variable: str):
     method = MCA.run_mca(file_name=filepath_CPSmodel)
 
@@ -72,7 +71,8 @@ def mca(filepath_CPSmodel: str, system_variable: str):
         'Possible inputs for system_variable: concentration, flux, elasticity'
 
     if system_variable == 'concentration':
-        control_coeff = MCA.print_annotated_matrix("Scaled Concentration Control Coefficients", method.getScaledConcentrationCCAnn())
+        control_coeff = MCA.print_annotated_matrix("Scaled Concentration Control Coefficients",
+                                                   method.getScaledConcentrationCCAnn())
         return control_coeff
     elif system_variable == 'flux':
         control_coeff = MCA.print_annotated_matrix("Scaled Flux Control Coefficients", method.getScaledFluxCCAnn())
@@ -82,7 +82,7 @@ def mca(filepath_CPSmodel: str, system_variable: str):
         return elasticity
 
 
-def scan(filepath_CPSmodel: str, parameter_name: str, E_T_or_k1: str, lb:float, ub:float, n:int,
+def scan(filepath_CPSmodel: str, parameter_name: str, E_T_or_k1: str, lb: float, ub: float, n: int,
          foldername='scan', deleteModels=False, rescaling=False):
 
     dataModel = init_dataModel(filepath_CPSmodel=filepath_CPSmodel)
@@ -106,18 +106,21 @@ def scan(filepath_CPSmodel: str, parameter_name: str, E_T_or_k1: str, lb:float, 
                       modelname=filepath_cpsmodel)
         concentrations, fluxes = steadystate(filepath_CPSmodel=filepath_CPSmodel)
         colname = vrange[i]
+        concentrations = pd.DataFrame.from_dict(concentrations, orient='index', columns=[colname, ])
+        fluxes = pd.DataFrame.from_dict(fluxes, orient='index', columns=[colname, ])
         if i == 0:
-            Conc = pd.DataFrame.from_dict(concentrations, orient='index', columns=[colname,])
-            Fluxes = pd.DataFrame.from_dict(fluxes, orient='index', columns=[colname,])
+            Conc = concentrations
+            Fluxes = fluxes
         else:
-            Conc = Conc.join(pd.DataFrame.from_dict(concentrations, orient='index', columns=[colname,]))
-            Fluxes = Fluxes.join(pd.DataFrame.from_dict(fluxes, orient='index', columns=[colname,]))
-    if deleteModels==True:
+            Conc = Conc.join(concentrations)
+            Fluxes = Fluxes.join(fluxes)
+    if deleteModels is True:
         shutil.rmtree(foldername)
     return Conc, Fluxes
 
+
 def integrate_expression(filepath_CPSmodel: str, filepath_expdata: str, filepath_mapping: str,
-                       foldername='updatedModels/', parametertochange='E_T'):
+                         foldername='updatedModels/', parametertochange='E_T'):
     dataModel = init_dataModel(filepath_CPSmodel=filepath_CPSmodel)
     expdata = pd.read_csv(filepath_expdata, delimiter='\t')
     mapping = pd.read_csv(filepath_mapping, delimiter='\t')
@@ -126,15 +129,15 @@ def integrate_expression(filepath_CPSmodel: str, filepath_expdata: str, filepath
     os.makedirs('updatedModels', exist_ok=True)
     for k in range(1, len(expdata.columns)):
         u.updateET(dataModel=dataModel, expdata=expdata, mappingdata=mapping, datacolumn=k,
-                                  foldername=foldername, parametertochange=parametertochange)
+                   foldername=foldername, parametertochange=parametertochange)
 
 
 def steadystate(filepath_CPSmodel: str, **kwargs):
-    '''
+    """
     Runs the model to steady state with the parameters as defined in the COPASI
     file (or default in case of SBML)
     :return: dictionaries of concentration of Metabolites and Reaction Fluxes
-    '''
+    """
     dataModel = init_dataModel(filepath_CPSmodel=filepath_CPSmodel)
 
     # set the steady-state task
@@ -157,6 +160,7 @@ def steadystate(filepath_CPSmodel: str, **kwargs):
     # task.restore()
     Concentrations, Fluxes = u.get_state(dataModel.getModel())
     return Concentrations, Fluxes
+
 
 def modelSummary(filepath_CPSmodel: str):
     dataModel = init_dataModel(filepath_CPSmodel=filepath_CPSmodel)
@@ -250,10 +254,8 @@ def time_course(filepath_CPSmodel: str, *args, **kwargs):
 
     return __build_result_from_ts(task.getTimeSeries(), use_concentrations)
 
-
-
-
 ########################################################################################################################
+
 
 def __method_name_to_type(method_name):
     methods = {
@@ -270,8 +272,8 @@ def __method_name_to_type(method_name):
     }
     return methods.get(method_name.lower(), COPASI.CTaskEnum.Method_deterministic)
 
+
 def __build_result_from_ts(time_series, use_concentrations=True):
-    # type: (COPASI.CTimeSeries) -> pandas.DataFrame
     col_count = time_series.getNumVariables()
     row_count = time_series.getRecordedSteps()
 
@@ -291,5 +293,4 @@ def __build_result_from_ts(time_series, use_concentrations=True):
 
     df = pd.DataFrame(data=concentrations, columns=column_names)
     df = df.set_index('Time')
-
     return df

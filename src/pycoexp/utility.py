@@ -16,12 +16,14 @@ def iter_steadystates(self, foldername='updatedModels'):
             Fluxes = Fluxes.join(pd.DataFrame.from_dict(fluxes, orient='index', columns=[colname, ]))
     return Conc, Fluxes
 
+
 def rxn_edgeCases(rxn_name: str) -> str:
     rxns = {'WARS': 'WARS2_tRNA_recombinant_assume_km_equal_Ka_or_Kb',
             'TDO2': 'TDO', 'NADSYN1': 'NADS'}
     if rxn_name in rxns.keys():
         rxn_name = rxns[rxn_name]
     return rxn_name
+
 
 def get_state(model):
     """
@@ -36,42 +38,46 @@ def get_state(model):
         Reaction_Fluxes['{}'.format(reaction.getObjectName())] = reaction.getFlux()
     return Metabolite_Concentrations, Reaction_Fluxes
 
-def updateModel1(dataModel, parameter_name: str or list, value: float, E_T_or_k1:str, modelname:str):
+
+def updateModel1(dataModel, parameter_name: str or list, value: float, E_T_or_k1: str, modelname: str):
     model = dataModel.getModel()
-    if type(parameter_name)==list:
+    if type(parameter_name) == list:
         for i in range(len(parameter_name)):
             updateParam(model=model, parameter_name=parameter_name[i], value=value[i], E_T_or_k1=E_T_or_k1)
-    elif type(parameter_name)==str:
+    elif type(parameter_name) == str:
         updateParam(model=model, parameter_name=parameter_name, value=value, E_T_or_k1=E_T_or_k1)
     return dataModel.saveModel(modelname, True)
 
-def updateParam(model, parameter_name: str, value: float, E_T_or_k1:str):
+
+def updateParam(model, parameter_name: str, value: float, E_T_or_k1: str):
     try:
         mv = model.getModelValue(parameter_name)
-        assert mv != None, "Parameter {} not found".format(parameter_name)
+        assert mv is not None, "Parameter {} not found".format(parameter_name)
         mv.setInitialValue(value)
     except AssertionError:
         rxn = model.getReaction(parameter_name)
-        assert rxn != None, "Reaction {} not found".format(parameter_name)
+        assert rxn is not None, "Reaction {} not found".format(parameter_name)
         para_value = rxn.getParameterValue(E_T_or_k1)
-        assert para_value != None, "No such parameter"
+        assert para_value is not None, "No such parameter"
         rxn.setParameterValue(E_T_or_k1, value)
         assert rxn.getParameterValue(E_T_or_k1) == value
 
-def updateModel(dataModel, parameter_name: str, value: float, E_T_or_k1:str, modelname:str):
+
+def updateModel(dataModel, parameter_name: str, value: float, E_T_or_k1: str, modelname: str):
     model = dataModel.getModel()
     try:
         mv = model.getModelValue(parameter_name)
-        assert mv != None, "Parameter {} not found".format(parameter_name)
+        assert mv is not None, "Parameter {} not found".format(parameter_name)
         mv.setInitialValue(value)
     except AssertionError:
         rxn = model.getReaction(parameter_name)
-        assert rxn != None, "Reaction {} not found".format(parameter_name)
+        assert rxn is not None, "Reaction {} not found".format(parameter_name)
         para_value = rxn.getParameterValue(E_T_or_k1)
-        assert para_value != None, "No such parameter"
+        assert para_value is not None, "No such parameter"
         rxn.setParameterValue(E_T_or_k1, value)
         assert rxn.getParameterValue(E_T_or_k1) == value
     return dataModel.saveModel(modelname, True)
+
 
 def updateET(dataModel, parametertochange, expdata, mappingdata, datacolumn, foldername):
     model = dataModel.getModel()
@@ -82,21 +88,21 @@ def updateET(dataModel, parametertochange, expdata, mappingdata, datacolumn, fol
         # print(reactions[i])
         try:
             mv = model.getModelValue(reactions[i])
-            assert mv != None, "Parameter {} not found".format(reactions[i])
+            assert mv is not None, "Parameter {} not found".format(reactions[i])
             mv.setInitialValue(df[df.columns[datacolumn]][i])
             assert mv.getInitialValue() == df[df.columns[datacolumn]][i]
             count += 1
         except AssertionError:
             try:
                 rxn = model.getReaction(reactions[i])
-                assert rxn != None, "Reaction {} not found".format(reactions[i])
+                assert rxn is not None, "Reaction {} not found".format(reactions[i])
             except AssertionError:
                 rxnID = mappingdata.loc[mappingdata.Model_ID == reactions[i], 'Name'].iloc[0]
                 rxnID = rxn_edgeCases(rxnID)
                 rxn = model.getReaction(rxnID)
-                assert rxn != None, "Reaction {} not found".format(rxnID)
+                assert rxn is not None, "Reaction {} not found".format(rxnID)
             value = rxn.getParameterValue(parametertochange)
-            assert value != None, "No such parameter in {}".format(rxn.getObjectName())
+            assert value is not None, "No such parameter in {}".format(rxn.getObjectName())
             rxn.setParameterValue(parametertochange, df[df.columns[datacolumn]][i])
             assert rxn.getParameterValue(parametertochange) == df[df.columns[datacolumn]][i]
             count += 1
@@ -104,18 +110,20 @@ def updateET(dataModel, parametertochange, expdata, mappingdata, datacolumn, fol
     modelname = foldername + df.columns[datacolumn].replace(' ', '_')+'.cps'
     return dataModel.saveModel(modelname, True)
 
+
 def getparametervalue(dataModel, parameter_name, E_T_or_k1):
     model = dataModel.getModel()
     try:
         mv = model.getModelValue(parameter_name)
-        assert mv != None, "Parameter {} not found".format(parameter_name)
+        assert mv is not None, "Parameter {} not found".format(parameter_name)
         pv = mv.getInitialValue()
     except AssertionError:
         rxn = model.getReaction(parameter_name)
-        assert rxn != None, "Reaction {} not found".format(parameter_name)
+        assert rxn is not None, "Reaction {} not found".format(parameter_name)
         pv = rxn.getParameterValue(E_T_or_k1)
-        assert pv != None, "No such parameter"
+        assert pv is not None, "No such parameter"
     return pv
+
 
 def print_ReactionScheme(model):
     # output number and scheme of all reactions
@@ -124,21 +132,22 @@ def print_ReactionScheme(model):
     print("Reactions: ")
     for i in range(0, iMax):
         reaction = model.getReaction(i)
-        assert reaction != None
+        assert reaction is not None
         print("\t" + "{}: {}".format(reaction.getObjectName(), reaction.getReactionScheme()))
     # return [model.getReaction(i).getReactionScheme() for i in range(model.getNumReactions())]
 
 
 def print_all_parameters(model, rxn_name='NUDT12'):
-    '''
+    """
     get names of all parameters of a reaction
     :param model: Cmodel object
     :param rxn_name: reaction name as string
     :return: list of strings parameter names
-    '''
+    """
     rxn = model.getReaction(rxn_name)
     params = rxn.getParameters()
     return [params.getName(i) for i in range(params.size())]
+
 
 def print_compartments(model):
     # output number and names of all compartments
@@ -147,7 +156,7 @@ def print_compartments(model):
     print("Compartments: ")
     for i in range(0, iMax):
         compartment = model.getCompartment(i)
-        assert compartment != None
+        assert compartment is not None
         print("\t" + compartment.getObjectName())
 
 
@@ -158,7 +167,7 @@ def print_metabolites(model):
     print("Metabolites: ")
     for i in range(0, iMax):
         metab = model.getMetabolite(i)
-        assert metab != None
+        assert metab is not None
         print("\t" + metab.getObjectName())
 
 
@@ -169,21 +178,5 @@ def print_reactions(model):
     print("Reactions: ")
     for i in range(0, iMax):
         reaction = model.getReaction(i)
-        assert reaction != None
+        assert reaction is not None
         print("\t" + reaction.getObjectName())
-    # return [reaction.getObjectName() for reaction in self.model.getReactions()]
-
-# model = dataModel.getModel()
-        # try:
-        #     para = model.getModelValue(parameter_name)
-        #     assert para != None, "Parameter {} not found".format(parameter_name)
-        #     mv = para.getInitialValue()
-        # except AssertionError:
-        #     rxn = model.getReaction(parameter_name)
-        #     assert rxn != None, "Reaction {} not found".format(parameter_name)
-        #     mv = rxn.getParameterValue(E_T_or_k1)
-
-        # if scaling is True:
-        #     vrange = mv * np.linspace(lb, ub, n)
-        # else:
-        #     vrange = mv * np.linspace(lb, ub, n)

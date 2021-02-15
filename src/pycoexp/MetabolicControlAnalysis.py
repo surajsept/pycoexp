@@ -18,7 +18,7 @@ def print_annotated_matrix(title: str, annotated_matrix: FloatMatrix) -> pd.Data
 
 	size = annotated_matrix.size()
 	if len(size) != 2:
-		print("  This simple function only deals with two dimensional matrices")
+		print(" This simple function only deals with two dimensional matrices")
 		return
 
 	rows = size[0]
@@ -87,9 +87,3 @@ def run_mca(file_name: str) -> CMCAMethod:
 	method = task.getMethod()
 	assert (isinstance(method, CMCAMethod))
 	return method
-
-
-# method = run_mca(file_name='path_to_COPASI_model')
-# print_annotated_matrix("Scaled Concentration Control Coefficients", method.getScaledConcentrationCCAnn())
-# print_annotated_matrix("Scaled Flux Control Coefficients", method.getScaledFluxCCAnn())
-# print_annotated_matrix("Scaled Elasticities", method.getScaledElasticitiesAnn())
