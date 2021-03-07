@@ -5,8 +5,9 @@ import pandas as pd
 import numpy as np
 import logging
 
-import pycoexp.MetabolicControlAnalysis as MCA
-import pycoexp.utility as u
+import MetabolicControlAnalysis as MCA
+#import pycoexp.utility as u
+import utility as u
 
 def optimization(filepath_CPSmodel, **kwargs):
     # create dataModel object

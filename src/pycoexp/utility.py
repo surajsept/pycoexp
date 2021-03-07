@@ -89,7 +89,8 @@ def updateET(dataModel, parametertochange, expdata, mappingdata, datacolumn, fol
         try:
             mv = model.getModelValue(reactions[i])
             assert mv is not None, "Parameter {} not found".format(reactions[i])
-            mv.setInitialValue(df[df.columns[datacolumn]][i])
+            #print(float(df[df.columns[datacolumn]][i]), flush=True)
+            mv.setInitialValue(float(df[df.columns[datacolumn]][i]))
             assert mv.getInitialValue() == df[df.columns[datacolumn]][i]
             count += 1
         except AssertionError:
@@ -103,8 +104,8 @@ def updateET(dataModel, parametertochange, expdata, mappingdata, datacolumn, fol
                 assert rxn is not None, "Reaction {} not found".format(rxnID)
             value = rxn.getParameterValue(parametertochange)
             assert value is not None, "No such parameter in {}".format(rxn.getObjectName())
-            rxn.setParameterValue(parametertochange, df[df.columns[datacolumn]][i])
-            assert rxn.getParameterValue(parametertochange) == df[df.columns[datacolumn]][i]
+            rxn.setParameterValue(parametertochange, float(df[df.columns[datacolumn]][i]))
+            assert rxn.getParameterValue(parametertochange) == float(df[df.columns[datacolumn]][i])
             count += 1
     assert count == len(df), "Successfully integrated {} of {} genes".format(count, len(df))
     modelname = foldername + df.columns[datacolumn].replace(' ', '_')+'.cps'
