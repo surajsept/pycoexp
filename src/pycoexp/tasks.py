@@ -126,7 +126,7 @@ def integrate_expression(filepath_CPSmodel: str, filepath_expdata: str, filepath
     mapping = pd.read_csv(filepath_mapping, delimiter='\t')
     if os.path.exists(foldername):
         shutil.rmtree(foldername)
-    os.makedirs('updatedModels', exist_ok=True)
+    os.makedirs(foldername, exist_ok=True)
     for k in range(1, len(expdata.columns)):
         u.updateET(dataModel=dataModel, expdata=expdata, mappingdata=mapping, datacolumn=k,
                    foldername=foldername, parametertochange=parametertochange)
