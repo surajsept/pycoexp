@@ -79,7 +79,7 @@ class tasks():
         return dataModel
 
 
-    def mca(self, filepath_CPSmodel: str, system_variable: str):
+    def mca(self, filepath_CPSmodel: str, system_variable: str, verbose:bool):
         '''
         runs metabolic control analysis
         :param filepath_CPSmodel: str; path to model (.cps)
@@ -93,13 +93,15 @@ class tasks():
 
         if system_variable == 'concentration':
             control_coeff = self.MCA.print_annotated_matrix("Scaled Concentration Control Coefficients",
-                                                       method.getScaledConcentrationCCAnn())
+                                                       method.getScaledConcentrationCCAnn(), verbose)
             return control_coeff
         elif system_variable == 'flux':
-            control_coeff = self.MCA.print_annotated_matrix("Scaled Flux Control Coefficients", method.getScaledFluxCCAnn())
+            control_coeff = self.MCA.print_annotated_matrix("Scaled Flux Control Coefficients",
+                                                            method.getScaledFluxCCAnn(), verbose)
             return control_coeff
         elif system_variable == 'elasticity':
-            elasticity = self.MCA.print_annotated_matrix("Scaled Elasticities", method.getScaledElasticitiesAnn())
+            elasticity = self.MCA.print_annotated_matrix("Scaled Elasticities", method.getScaledElasticitiesAnn(),
+                                                         verbose)
             return elasticity
 
 

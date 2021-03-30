@@ -5,17 +5,13 @@ import numpy as np
 dataModel = None
 
 
-def print_annotated_matrix(title: str, annotated_matrix: FloatMatrix) -> pd.DataFrame:
+def print_annotated_matrix(title: str, annotated_matrix: FloatMatrix, verbose:bool) -> pd.DataFrame:
 	"""
 	Utility function printing an annotated matrix
 	"""
 
 	# print(annotated_matrix.printToString())
 	# return
-
-	print(title)
-	print('==========')
-
 	size = annotated_matrix.size()
 	if len(size) != 2:
 		print(" This simple function only deals with two dimensional matrices")
@@ -23,7 +19,10 @@ def print_annotated_matrix(title: str, annotated_matrix: FloatMatrix) -> pd.Data
 
 	rows = size[0]
 	columns = size[1]
-	print("Size of the matrix is: {0} rows x {1} columns".format(rows, columns))
+	if verbose is True:
+		print(title)
+		print('==========')
+		print("Size of the matrix is: {0} rows x {1} columns".format(rows, columns))
 
 	row_headers = annotated_matrix.getAnnotationsString(0)
 	col_headers = annotated_matrix.getAnnotationsString(1)

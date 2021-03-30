@@ -1,8 +1,9 @@
 import unittest
-import pycoexp.tasks as task
+import pycoexp.tasks
 import COPASI
 import pandas
 
+task = pycoexp.tasks.tasks()
 
 class MyTestCase(unittest.TestCase):
     def test_init_dataModel(self):
@@ -32,7 +33,7 @@ class MyTestCase(unittest.TestCase):
                                            filepath_expdata='../src/pycoexp/ExpData.csv',
                                            filepath_mapping='../src/pycoexp/mapping.csv',
                                            foldername='../src/pycoexp/updatedModels/', parametertochange='E_T')
-        self.assertEqual(result, None)
+        self.assertEqual(result, 0)
 
     def test_mca(self):
         result = task.mca(filepath_CPSmodel='../src/pycoexp/model.cps', system_variable='concentration')
