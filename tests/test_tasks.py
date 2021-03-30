@@ -36,7 +36,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, 0)
 
     def test_mca(self):
-        result = task.mca(filepath_CPSmodel='../src/pycoexp/model.cps', system_variable='concentration')
+        result = task.mca(filepath_CPSmodel='../src/pycoexp/model.cps', system_variable='concentration', verbose=False)
         self.assertIs(type(result), pandas.DataFrame)
 
 
