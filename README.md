@@ -4,14 +4,7 @@ A python package that allows users to integrate expression data into Copasi (.cp
 The *pycoexp* framework is developed using Python 3.
 
 ****
-#### 1. Getting python
-You can download the latest version of Python [here](https://www.python.org/downloads/).
-Alternatively, you can use [Anaconda](https://www.anaconda.com/download/) to install python for your computer (Linux, Windows, Mac).
-  
-#### 2. Installing packages using requirement file
-     $ pip install -r requirements.txt
-
-#### 3. Cloning and installing pycoexp pacakge
+#### Cloning and installing pycoexp package
      $ pip install git+https://github.com/MolecularBioinformatics/pycoexp
 
 ****
@@ -38,7 +31,7 @@ Concentration, Flux = task.steadystate(filepath_CPSmodel='model.cps')
 ### Example 2: To calculate control coefficients
 ```python
 # perform metabolic control analysis
-ControlCoefficients, Elasticities = task.mca(filepath_CPSmodel='model.cps', system_variable='concentration')
+ControlCoefficients = task.mca(filepath_CPSmodel='model.cps', system_variable='concentration', verbose=True)
 ```
 
 ### Example 3: To do a parameter scan
