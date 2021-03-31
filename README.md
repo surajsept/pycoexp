@@ -5,7 +5,7 @@ The *pycoexp* framework is developed using Python 3.
 
 ****
 #### Cloning and installing pycoexp package
-     $ pip install git+https://github.com/MolecularBioinformatics/pycoexp
+     $ pip install git+https://github.com/surajsept/pycoexp.git
 
 ****
 Once you have checked the steps above. You may consider refering to the [Beginners Guide](https://wiki.python.org/moin/BeginnersGuide). 
