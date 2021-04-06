@@ -19,6 +19,20 @@ task.integrate_expression(filepath_CPSmodel='model.cps', filepath_expdata='ExpDa
                            foldername='updatedModels/', parametertochange='E_T')
 ```
 
+#### File templates:
+#### Mapping file template
+|Name|Model_ID|...|
+|---|---|---|
+|   |   |   |
+|   |   |   |
+
+#### Expression file template
+|Name|Exp1|Exp2|...|
+|---|---|---|---|
+|   |   |   |   |
+|   |   |   |   |
+
+here, "Name" corresponds to the gene name/symbol, "Model_ID" stands for the ID in SBML model and "Exp1..." stand for experiment/observation name.
 ****
 Additionally,
 
