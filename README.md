@@ -13,10 +13,11 @@ Or, just start a python console to:
 ### Integrate expression values into a copasi model.
 
 ```python
-import pycoexp.tasks as task
+import pycoexp.tasks
+task = pycoexp.tasks.tasks()
 # integrate expression values and save updated copasi models in folder 'updatedModels'
-task.integrate_expression(filepath_CPSmodel='model.cps', filepath_expdata='ExpData.csv', filepath_mapping='mapping.csv',
-                           foldername='updatedModels/', parametertochange='E_T')
+task.integrate_expression(filepath_CPSmodel='model.cps', filepath_expdata='ExpData.csv', 
+                          filepath_mapping='mapping.csv', foldername='updatedModels/')
 ```
 
 #### File templates:
