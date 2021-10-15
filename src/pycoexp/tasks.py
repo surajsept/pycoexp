@@ -209,6 +209,11 @@ class tasks():
         file (or default in case of SBML)
         :return: dictionaries of concentration of Metabolites and Reaction Fluxes
         """
+        ss_states = {0: 'not found',
+                     1: 'steady state found',
+                     2: 'equillibrium steady state found',
+                     3: 'steady state with negative concentrations found'
+                     }
         dataModel = self.init_dataModel(filepath_CPSmodel=filepath_CPSmodel)
 
         # set the steady-state task
@@ -227,13 +232,35 @@ class tasks():
         task.initialize(COPASI.CCopasiTask.NO_OUTPUT)
 
         task.process(True)
-        assert task.process(True) is True
+        assert task.process(True) is True, 'Steady-state is not found'
 
         state = task.getResult()
-        assert (state == 1)
+        assert (state == 1), f'state = {ss_states[state]}'
         # task.restore()
         Concentrations, Fluxes = self.util.get_state(dataModel.getModel())
         return Concentrations, Fluxes
+
+    def getsteadystate(self, foldername):
+        cpsmodels = cpsmodels = [os.path.join(foldername, i) for i in os.listdir(foldername)]
+        conc, flux = [], []
+        colnames = []
+        for filepath_CPSmodel in cpsmodels:
+            colname = filepath_CPSmodel.split('/')[-1][:-4]
+            try:
+                concentrations, fluxes = task.steadystate(filepath_CPSmodel=filepath_CPSmodel)
+                conc.append(concentrations)
+                flux.append(fluxes)
+                colnames.append(colname)
+            except AssertionError:
+                print(f'Steady-state not found for {colname}')
+                pass
+
+        conc = pd.DataFrame(conc)
+        conc['cases'] = colnames
+        flux = pd.DataFrame(flux)
+        flux['cases'] = colnames
+
+        return conc.set_index('cases'), flux.set_index('cases')
 
 
     def modelSummary(self, filepath_CPSmodel: str):
