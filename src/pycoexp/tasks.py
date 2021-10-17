@@ -247,7 +247,7 @@ class tasks():
         for filepath_CPSmodel in cpsmodels:
             colname = filepath_CPSmodel.split('/')[-1][:-4]
             try:
-                concentrations, fluxes = task.steadystate(filepath_CPSmodel=filepath_CPSmodel)
+                concentrations, fluxes = self.steadystate(filepath_CPSmodel=filepath_CPSmodel)
                 conc.append(concentrations)
                 flux.append(fluxes)
                 colnames.append(colname)
