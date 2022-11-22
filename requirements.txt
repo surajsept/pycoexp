@@ -15,7 +15,7 @@
 # numpy==1.13.3
 # scipy==1.0
 #
-numpy==1.19.2
+numpy==1.22.0
 pandas==1.1.2
 python-copasi==4.29.227
 PyScaffold==3.2.3
