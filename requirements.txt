@@ -20,5 +20,5 @@ pandas==1.1.2
 python-copasi==4.29.227
 PyScaffold==3.2.3
 pyscaffoldext-dsproject==0.4
-scipy==1.5.2
+scipy==1.10.0
 seaborn==0.11.0
